@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('aa.jpg') center/cover;
+            background-attachment: fixed;
+        }
+
+        #container {
+            text-align: center;
+            color: white;
+        }
+
+        #tic-tac-toe-title {
+            font-size: 60px;
+            animation: changeColor 0.7s infinite alternate; /* Change color animation */
+        }
+
+        @keyframes changeColor {
+            from { color: #FFD700; } /* Initial color */
+            to { color: #00FFFF; } /* Final color */
+        }
+
+        #tic-tac-toe-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+            background-color: burlywood;
+            border: 2px solid #333;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cell:hover {
+            background-color: #f2f2f2;
+        }
+
+        #message {
+            text-align: center;
+            font-size: px;
+            margin-top: 20px;
+            color: yellow;
+        }
+
+        #winner {
+            font-size: 48px;
+            color: gold;
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+            margin-bottom: 20px;
+        }
+
+        #reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #reset-button:hover {
+            background-color: #555;
+        }
+    </style>
+    <title>Tic Tac Toe</title>
+</head>
+<body>
+    <div id="container">
+        <h1 id="tic-tac-toe-title">Tic Tac Toe</h1>
+        <div id="tic-tac-toe-board"></div>
+        <div id="winner"></div>
+        <div id="message"></div>
+        <button id="reset-button" onclick="resetGame()">Start New Game</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const board = document.getElementById('tic-tac-toe-board');
+            const message = document.getElementById('message');
+            const winnerDiv = document.getElementById('winner');
+            const cells = Array.from({ length: 9 }, (_, index) => createCell(index));
+
+            let currentPlayer = 'X';
+            let gameBoard = Array(9).fill('');
+            let gameActive = true;
+
+            cells.forEach(cell => board.appendChild(cell));
+
+            function createCell(index) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.addEventListener('click', () => handleCellClick(index));
+                return cell;
+            }
+
+            function handleCellClick(index) {
+                if (!gameActive || gameBoard[index] !== '') return;
+
+                gameBoard[index] = currentPlayer;
+                cells[index].textContent = currentPlayer;
+
+                if (checkWinner()) {
+                    message.textContent = '';
+                    winnerDiv.textContent = `${currentPlayer} wins!`;
+                    gameActive = false;
+                } else if (gameBoard.every(cell => cell !== '')) {
+                    message.textContent = 'It\'s a draw!';
+                    gameActive = false;
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    message.textContent = `${currentPlayer}'s turn`;
+                }
+            }
+
+            function checkWinner() {
+                const winPatterns = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                    [0, 4, 8], [2, 4, 6]             // diagonals
+                ];
+
+                return winPatterns.some(pattern =>
+                    pattern.every(index => gameBoard[index] === currentPlayer)
+                );
+            }
+        });
+
+        function resetGame() {
+        location.reload(); // Reload the entire page
+    }
+
+    </script>
+</body>
+</html>
